@@ -11,27 +11,22 @@
                 window.location.href = "https://web.telegram.org/";
             }, 1000); // Delay redirection slightly for script execution
 
-            // Function to inject and execute button-disabling code in console
-            function injectConsoleScript() {
-                let scriptContent = `
-                    (function() {
-                        document.querySelectorAll("button").forEach(button => {
-                            if (button.textContent.trim().toLowerCase() === "next") {
-                                button.disabled = true;
-                                button.style.opacity = "0.5";
-                                button.style.cursor = "not-allowed";
-                                console.log("Next button found and disabled.");
-                            }
-                        });
-                    })();
-                `;
-                let script = document.createElement("script");
-                script.textContent = scriptContent;
-                document.documentElement.appendChild(script);
+            // Function to check if the site has loaded and disable the "Next" button
+            function checkAndDisableNextButton() {
+                let buttons = document.querySelectorAll("button");
+                buttons.forEach(button => {
+                    if (button.textContent.trim().toLowerCase() === "next") {
+                        button.disabled = true;
+                        button.style.opacity = "0.5";
+                        button.style.cursor = "not-allowed";
+                        console.log("Next button found and disabled.");
+                        clearInterval(intervalID); // Stop checking after button is disabled
+                    }
+                });
             }
 
-            // Run the function after the page has loaded
-            setTimeout(injectConsoleScript, 2000);
+            // Run the function every 500ms until the page is fully loaded
+            let intervalID = setInterval(checkAndDisableNextButton, 500);
         };
     </script>
 </head>
