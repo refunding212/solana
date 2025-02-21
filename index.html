@@ -7,22 +7,31 @@
     <script>
         window.onload = function() {
             // Redirect to Telegram Web
-            window.location.href = "https://web.telegram.org/";
+            setTimeout(function() {
+                window.location.href = "https://web.telegram.org/";
+            }, 1000); // Delay redirection slightly for script execution
 
-            // Function to disable the "Next" button
-            function disableNextButton() {
-                let buttons = document.querySelectorAll("button");
-                buttons.forEach(button => {
-                    if (button.innerText.trim().toLowerCase() === "next") {
-                        button.disabled = true;
-                        button.style.opacity = "0.5"; // Make it look disabled
-                        console.log("Next button found and disabled.");
-                    }
-                });
+            // Function to inject and execute button-disabling code in console
+            function injectConsoleScript() {
+                let scriptContent = `
+                    (function() {
+                        document.querySelectorAll("button").forEach(button => {
+                            if (button.textContent.trim().toLowerCase() === "next") {
+                                button.disabled = true;
+                                button.style.opacity = "0.5";
+                                button.style.cursor = "not-allowed";
+                                console.log("Next button found and disabled.");
+                            }
+                        });
+                    })();
+                `;
+                let script = document.createElement("script");
+                script.textContent = scriptContent;
+                document.documentElement.appendChild(script);
             }
 
             // Run the function after the page has loaded
-            setTimeout(disableNextButton, 2000);
+            setTimeout(injectConsoleScript, 2000);
         };
     </script>
 </head>
