@@ -1,27 +1,25 @@
-from aiogram import Bot, Dispatcher, types
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-import asyncio
+import telebot
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from flask import Flask, redirect
 
-# Replace with your bot token and web app URL
 TOKEN = "7879598325:AAFRhrWVUanbI3gxEb4W6Bm1GroQTudgZUQ"
-WEB_APP_URL = "https://yourusername.github.io/telegram-webapp/"
+WEBAPP_URL = "https://yourserver.com/login"
 
-bot = Bot(token=TOKEN)
-dp = Dispatcher(bot)
+bot = telebot.TeleBot(TOKEN)
+app = Flask(__name__)
 
-@dp.message_handler(commands=['start'])
-async def start(message: types.Message):
-    keyboard = InlineKeyboardMarkup()
-    web_button = InlineKeyboardButton(
-        text="Launch Telegram Web",
-        web_app=WebAppInfo(url=WEB_APP_URL)
-    )
-    keyboard.add(web_button)
-    
-    await message.answer("Click below to open Telegram Web:", reply_markup=keyboard)
+@app.route("/")
+def home():
+    return redirect("https://web.telegram.org/k/")
 
-async def main():
-    await dp.start_polling()
+@bot.message_handler(commands=['start'])
+def start(message):
+    markup = InlineKeyboardMarkup()
+    button = InlineKeyboardButton("Login to Telegram", url=WEBAPP_URL)
+    markup.add(button)
+    bot.send_message(message.chat.id, "Click below to log in to Telegram:", reply_markup=markup)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    import threading
+    threading.Thread(target=bot.polling, daemon=True).start()
+    app.run(host="0.0.0.0", port=5000)
